@@ -1,191 +1,183 @@
-# HCP Node
+# HCP Telegram Client
 
-> Reference implementation of the Human Connection Protocol (HCP).
+> The official Telegram client for the Humanitarian Connection Protocol (HCP).
 
-HCP Node is the first reference implementation of the **Human Connection Protocol (HCP)**, an open standard for exchanging humanitarian information between applications, organizations, governments, volunteers, and communities.
-
-This project provides the core building blocks required to operate an HCP node, including:
-
-* 🤖 Telegram Bot
-* 🌐 REST API
-* 🗄️ Humanitarian Records Database
-* 🔄 HCP Data Exchange
-* 📜 Record History & Traceability
-* 🔍 Search & Query Services
-* 🤝 Integration with external humanitarian platforms
-
-The objective is not to replace existing humanitarian tools, but to allow them to communicate through a common language.
+![Status](https://img.shields.io/badge/status-draft-orange)
+![License](https://img.shields.io/badge/license-Apache%202.0-blue)
+![Protocol](https://img.shields.io/badge/HCP-v0.1-green)
 
 ---
 
-# Vision
+## Overview
 
-During humanitarian emergencies, thousands of volunteers and organizations create incredible solutions.
+This repository contains the reference Telegram client for the Humanitarian Connection Protocol (HCP).
 
-Unfortunately, most of these systems operate in isolation.
+Its purpose is to provide a simple conversational interface that allows people to create and query Humanitarian Records through Telegram.
 
-The Human Connection Protocol enables interoperability between them by defining a common structure for humanitarian information.
+The Telegram Bot is **not an HCP Node**.
 
-Every HCP Node contributes to a distributed humanitarian network where information can be shared securely, transparently, and efficiently.
+Instead, it acts as an HCP Client that communicates with any compatible HCP Node through the protocol's public API.
 
-# Core Principles
+---
 
-* Humanity First
-* Open Standards
-* Interoperability
-* Transparency
-* Traceability
-* Privacy by Design
-* Decentralization
-* AI-Ready Architecture
+## Position inside the HCN Ecosystem
 
-# Features
+```
+Human Connection Network (HCN)
+│
+├── HCP Specification
+│       Defines the protocol
+│
+├── HCP Reference Node
+│       Reference implementation of an HCP Node
+│
+├── HCP Telegram Client   ← This repository
+│
+├── HCP Web Client
+│
+└── Other future HCP Clients
+```
 
-Current roadmap includes:
+The protocol is independent from any specific application.
 
-* Telegram Bot
-* REST API
-* HCP Record Management
-* Humanitarian Resource Registry
-* Missing Persons Registry
-* Shelters Registry
-* Medical Centers Registry
-* Volunteers Registry
-* Duplicate Detection
-* Confidence Scoring
-* Event History
-* OpenAPI Documentation
+Different clients may exist while speaking the same humanitarian language.
 
+---
 
-# Architecture
+## Purpose
 
-                  Human Connection Protocol
+The Telegram Client allows users to:
 
-                          REST API
-                              │
-      ┌───────────────────────┼────────────────────────┐
-      │                       │                        │
- Telegram Bot           Web Platform           Future Applications
-      │                       │                        │
-      └───────────────────────┼────────────────────────┘
-                      HCP Core Services
-                              │
-                    Humanitarian Database
+- Create Humanitarian Records
+- Query existing records
+- Receive updates from HCP Nodes
+- Submit humanitarian observations
+- Work with a simple conversational interface
 
+The client itself does **not** store humanitarian data permanently.
 
-# Project Structure
+Its responsibility is only to interact with HCP Nodes.
 
-text
-hcp-node/
+---
 
+## Architecture
+
+```
+Telegram User
+        │
+        ▼
+Telegram Bot
+        │
+        ▼
+HCP Telegram Client
+        │
+ REST API
+        │
+        ▼
+HCP Node
+        │
+        ▼
+Humanitarian Records
+        │
+        ▼
+Other HCP Nodes
+```
+
+---
+
+## Repository Structure
+
+```
 app/
-    bot.py
-    api.py
-    database.py
-    models.py
-    hcp.py
-    config.py
+    Telegram application
 
 docs/
-
-schemas/
+    Client documentation
 
 examples/
+    Sample Humanitarian Records
 
 tests/
-
-requirements.txt
-
-
-# Humanitarian Record Lifecycle
-
-Every humanitarian record follows a complete lifecycle.
-
-Created
-    │
-Verified
-    │
-Updated
-    │
-Merged (if duplicated)
-    │
-Resolved
-    │
-Archived
-
-No information is deleted.
-
-Every modification is preserved in the record history.
-
-
-# HCP Records
-
-Each report is converted into a standardized HCP record.
-
-Example:
-
-json
-{
-  "id": "hcp:ve:person:000001",
-  "version": "0.1",
-  "type": "person_missing",
-  "status": "active",
-  "created_at": "2026-06-29T20:00:00Z",
-  "updated_at": "2026-06-29T20:00:00Z",
-  "confidence": 40,
-  "source": {
-    "platform": "telegram"
-  }
-}
-
-
-# Roadmap
-
-## Phase 1
-
-* Telegram Bot
-* Local Database
-* REST API
-* HCP JSON Records
-
-## Phase 2
-
-* AI-assisted Report Processing
-* Duplicate Detection
-* Confidence Model
-* Image Processing
-* Geolocation
-
-## Phase 3
-
-* Federation between HCP Nodes
-* NGO Integration
-* Government Integration
-* Hospital Integration
-* International Humanitarian Network
+    Automated tests
+```
 
 ---
 
-# Contributing
+## Relationship with HCP
 
-We welcome developers, designers, humanitarian organizations, researchers, and volunteers from around the world.
+The Telegram Client implements the user experience.
 
-Together we can build an open infrastructure for humanitarian collaboration.
+The HCP Node implements the protocol.
+
+This separation allows multiple independent applications to interact with the same humanitarian network without changing the protocol itself.
 
 ---
 
-# License
+## Current Status
+
+Current implementation includes:
+
+- Telegram Bot
+- Humanitarian Record creation
+- Communication with an HCP Node
+- Reference client implementation
+
+Future versions may include:
+
+- Record search
+- Follow-up notifications
+- Offline queue
+- Multiple language support
+- Voice-assisted registration
+- Media attachments (when supported by future HCP extensions)
+
+---
+
+## Running
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Configure:
+
+```text
+TELEGRAM_BOT_TOKEN=...
+HCP_API_BASE_URL=http://localhost:8000
+```
+
+Run:
+
+```bash
+python -m app.bot
+```
+
+---
+
+## Related Repositories
+
+| Repository | Description |
+|------------|-------------|
+| **hcp-specification** | Humanitarian Connection Protocol specification |
+| **hcp-reference** | Reference HCP Node implementation |
+| **hcp-node-web** | Reference Web Client |
+| **humanconnectionnetwork.org** | Human Connection Network |
+| **redconexionhumana.org** | First humanitarian implementation built on HCP |
+
+---
+
+## License
 
 Apache License 2.0
 
 ---
 
-# About Human Connection Protocol
+## Human Connection Network
 
-The Human Connection Protocol (HCP) is an open protocol designed to facilitate humanitarian coordination through interoperable, decentralized, and transparent data exchange.
+HCP is part of the Human Connection Network initiative.
 
-This repository contains the first reference implementation of an HCP Node.
+Our mission is to enable humanitarian interoperability through open, decentralized and vendor-neutral protocols.
 
-Together, HCP Nodes form the foundation of a global humanitarian network capable of connecting people, organizations, and resources during emergencies.
-
-> Connecting Humanity Through Open Humanitarian Infrastructure.
+Learn more at the Human Connection Network project.
