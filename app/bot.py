@@ -1,8 +1,14 @@
-from telegram.ext import Application, CallbackQueryHandler, CommandHandler, MessageHandler, filters
+from telegram.ext import (
+    Application,
+    CallbackQueryHandler,
+    CommandHandler,
+    MessageHandler,
+    filters,
+)
 
 from app.config import settings
 from app.conversation.create_record import (
-    ask_reported_name,
+    ask_estimated_age,
     create_record_menu,
     handle_record_text,
 )
@@ -21,7 +27,7 @@ def main() -> None:
     )
 
     application.add_handler(
-        CallbackQueryHandler(ask_reported_name, pattern="^event_")
+        CallbackQueryHandler(ask_estimated_age, pattern="^event_")
     )
 
     application.add_handler(
