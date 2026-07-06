@@ -1,13 +1,61 @@
 {
-  "welcome_title": "🤝 Human Connection Network",
-  "welcome_message": "Bienvenido. Este servicio permite crear y buscar casos humanitarios reportados.",
-  "main_menu_question": "¿Qué deseas hacer?",
-  "create_report": "📝 Crear reporte",
-  "search_report": "🔍 Buscar caso reportado",
-  "language": "🌐 Idioma",
-  "help": "❓ Ayuda",
-  "cancel": "❌ Cancelar",
-  "confirm": "✅ Confirmar",
-  "edit": "✏️ Editar",
-  "unknown": "Desconocido"
+  "start.welcome_title": "🤝 Human Connection Network",
+  "start.welcome_message": "Bienvenido. Este servicio permite crear y buscar observaciones humanitarias reportadas.",
+  "start.main_menu_question": "¿Qué deseas hacer?",
+
+  "menu.create_report": "📝 Crear reporte",
+  "menu.search_report": "🔍 Buscar caso reportado",
+  "menu.language": "🌐 Idioma",
+  "menu.help": "❓ Ayuda",
+
+  "record.title": "📝 Crear reporte",
+  "record.question": "¿Qué deseas reportar?",
+  "record.name": "👤 ¿Cuál es el nombre reportado?",
+  "record.age": "🎂 ¿Cuál es la edad aproximada?",
+  "record.location": "📍 ¿Dónde fue reportado el caso?",
+  "record.source": "🏥 ¿Cuál es la fuente de información?",
+  "record.description": "📝 Describe brevemente la situación.",
+  "record.summary": "📋 Resumen del reporte",
+  "record.success": "✅ El reporte fue enviado correctamente.",
+  "record.failed": "⚠️ No fue posible enviar el reporte.",
+  "record.pending": "⏳ El reporte quedó pendiente de envío.",
+
+  "event.missing": "🚨 Persona desaparecida",
+  "event.hospitalized": "🏥 Persona hospitalizada",
+  "event.sheltered": "🏠 Persona refugiada / en albergue",
+  "event.safe": "✅ Persona localizada / segura",
+  "event.public_emergency": "🚑 Emergencia pública",
+
+  "search.title": "🔍 Buscar caso reportado",
+  "search.question": "Introduce los datos disponibles para buscar un caso reportado.",
+  "search.no_results": "No se encontraron casos similares.",
+  "search.results": "Se encontraron posibles casos relacionados.",
+  "search.explanation": "Los resultados representan posibles correlaciones entre observaciones humanitarias y no una identificación confirmada.",
+
+  "candidate.title": "Posible caso relacionado",
+  "candidate.probability": "Probabilidad",
+  "candidate.details": "Ver detalles",
+
+  "help.title": "❓ Ayuda",
+  "help.description": "Human Connection Network permite registrar y consultar observaciones humanitarias utilizando el Humanitarian Connection Protocol (HCP).",
+
+  "language.title": "🌐 Idioma",
+  "language.select": "Selecciona tu idioma.",
+
+  "errors.network": "⚠️ No fue posible establecer conexión con el Nodo HCP.",
+  "errors.timeout": "⏳ La solicitud tardó demasiado tiempo.",
+  "errors.node_unavailable": "⚠️ El Nodo HCP no está disponible en este momento.",
+  "errors.invalid_input": "⚠️ La información introducida no es válida.",
+  "errors.unexpected": "⚠️ Ocurrió un error inesperado.",
+
+  "common.confirm": "✅ Confirmar",
+  "common.cancel": "❌ Cancelar",
+  "common.edit": "✏️ Editar",
+  "common.back": "⬅️ Volver",
+  "common.next": "➡️ Continuar",
+  "common.yes": "Sí",
+  "common.no": "No",
+  "common.unknown": "Desconocido",
+  "common.loading": "⏳ Procesando...",
+  "common.done": "✔️ Listo"
 }
