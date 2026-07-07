@@ -13,9 +13,15 @@ from app.conversation.create_record import (
     handle_animal_breed,
     handle_animal_size,
     handle_animal_species,
+    handle_edit_animal_breed,
+    handle_edit_animal_size,
+    handle_edit_animal_species,
+    handle_edit_choice,
+    handle_edit_source,
     handle_record_text,
     handle_reporter_source,
     select_subject_type,
+    show_edit_menu,
     submit_record,
 )
 from app.conversation.search_record import search_record_menu
@@ -74,6 +80,39 @@ def main() -> None:
 
     application.add_handler(
         CallbackQueryHandler(handle_reporter_source, pattern="^source_")
+    )
+
+    application.add_handler(
+        CallbackQueryHandler(show_edit_menu, pattern="^review_edit$")
+    )
+
+    application.add_handler(
+        CallbackQueryHandler(handle_edit_source, pattern="^edit_source_")
+    )
+
+    application.add_handler(
+        CallbackQueryHandler(
+            handle_edit_animal_species,
+            pattern="^edit_animal_species_",
+        )
+    )
+
+    application.add_handler(
+        CallbackQueryHandler(
+            handle_edit_animal_size,
+            pattern="^edit_animal_size_",
+        )
+    )
+
+    application.add_handler(
+        CallbackQueryHandler(
+            handle_edit_animal_breed,
+            pattern="^edit_animal_breed_",
+        )
+    )
+
+    application.add_handler(
+        CallbackQueryHandler(handle_edit_choice, pattern="^edit_")
     )
 
     application.add_handler(
