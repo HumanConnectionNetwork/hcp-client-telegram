@@ -1,6 +1,7 @@
 from .form import (
     ask_estimated_age,
     ask_reporter_source,
+    handle_animal_size,
     handle_record_text,
     handle_reporter_source,
 )
@@ -13,6 +14,7 @@ __all__ = [
     "select_subject_type",
     "ask_estimated_age",
     "ask_reporter_source",
+    "handle_animal_size",
     "handle_record_text",
     "handle_reporter_source",
     "review_record",
