@@ -14,7 +14,7 @@ HUMAN_EVENT_LABELS = {
 
 
 ANIMAL_SPECIES_LABELS = {
-    "dog": "Gato",
+    "dog": "Perro",
     "cat": "Gato",
     "horse": "Caballo",
     "bird": "Ave",
@@ -73,10 +73,7 @@ def get_animal_breed_label(context: ContextTypes.DEFAULT_TYPE) -> str:
     return ANIMAL_BREED_LABELS.get(breed, breed)
 
 
-async def review_record(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE,
-) -> None:
+def build_review_summary(context: ContextTypes.DEFAULT_TYPE) -> str:
     subject_type = context.user_data.get("subject_type", "human")
     source = context.user_data.get("source", "unknown")
 
@@ -115,13 +112,22 @@ async def review_record(
 
     summary += "¿Deseas enviar este reporte?"
 
+    return summary
+
+
+async def review_record(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+) -> None:
+    context.user_data["record_step"] = states.REVIEW
+
     keyboard = [
         [InlineKeyboardButton("✅ Confirmar y enviar", callback_data="review_confirm")],
         [InlineKeyboardButton("✏️ Editar información", callback_data="review_edit")],
         [InlineKeyboardButton("❌ Cancelar", callback_data="review_cancel")],
     ]
 
-    context.user_data["record_step"] = states.REVIEW
+    summary = build_review_summary(context)
 
     if update.message:
         await update.message.reply_text(
@@ -135,37 +141,3 @@ async def review_record(
             summary,
             reply_markup=InlineKeyboardMarkup(keyboard),
         )
-
-
-async def edit_previous_step(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE,
-) -> None:
-    query = update.callback_query
-
-    if not query:
-        return
-
-    await query.answer()
-
-    subject_type = context.user_data.get("subject_type", "human")
-
-    if subject_type == "animal":
-        context.user_data["record_step"] = states.DESCRIPTION
-        await query.edit_message_text(
-            text=(
-                "📝 Edita la descripción del reporte.\n\n"
-                "Escribe únicamente información útil y relevante.\n\n"
-                "Máximo 300 caracteres."
-            )
-        )
-        return
-
-    context.user_data["record_step"] = states.DESCRIPTION
-    await query.edit_message_text(
-        text=(
-            "📝 Edita la descripción del reporte.\n\n"
-            "Escribe únicamente información útil y relevante.\n\n"
-            "Máximo 300 caracteres."
-        )
-    )
