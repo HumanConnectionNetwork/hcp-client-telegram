@@ -14,7 +14,7 @@ HUMAN_EVENT_LABELS = {
 
 
 ANIMAL_SPECIES_LABELS = {
-    "dog": "Perro",
+    "dog": "Gato",
     "cat": "Gato",
     "horse": "Caballo",
     "bird": "Ave",
@@ -135,3 +135,37 @@ async def review_record(
             summary,
             reply_markup=InlineKeyboardMarkup(keyboard),
         )
+
+
+async def edit_previous_step(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+) -> None:
+    query = update.callback_query
+
+    if not query:
+        return
+
+    await query.answer()
+
+    subject_type = context.user_data.get("subject_type", "human")
+
+    if subject_type == "animal":
+        context.user_data["record_step"] = states.DESCRIPTION
+        await query.edit_message_text(
+            text=(
+                "📝 Edita la descripción del reporte.\n\n"
+                "Escribe únicamente información útil y relevante.\n\n"
+                "Máximo 300 caracteres."
+            )
+        )
+        return
+
+    context.user_data["record_step"] = states.DESCRIPTION
+    await query.edit_message_text(
+        text=(
+            "📝 Edita la descripción del reporte.\n\n"
+            "Escribe únicamente información útil y relevante.\n\n"
+            "Máximo 300 caracteres."
+        )
+    )
