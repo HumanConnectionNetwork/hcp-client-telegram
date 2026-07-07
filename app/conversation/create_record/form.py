@@ -63,11 +63,9 @@ async def show_animal_species_options(
         [InlineKeyboardButton("🐾 Otro / No sé", callback_data="animal_species_unknown")],
     ]
 
-    message = "🐾 ¿Qué animal es?"
-
     if query:
         await query.edit_message_text(
-            text=message,
+            text="🐾 ¿Qué animal es?",
             reply_markup=InlineKeyboardMarkup(keyboard),
         )
 
@@ -103,11 +101,9 @@ async def show_animal_size_options(
         [InlineKeyboardButton("❓ Desconocido", callback_data="animal_size_unknown")],
     ]
 
-    message = "📏 ¿Cuál es el tamaño aproximado del animal?"
-
     if query:
         await query.edit_message_text(
-            text=message,
+            text="📏 ¿Cuál es el tamaño aproximado del animal?",
             reply_markup=InlineKeyboardMarkup(keyboard),
         )
 
@@ -142,11 +138,9 @@ async def show_animal_breed_options(
         [InlineKeyboardButton("❓ Desconocida", callback_data="animal_breed_unknown")],
     ]
 
-    message = "🐾 ¿Qué raza parece ser?"
-
     if query:
         await query.edit_message_text(
-            text=message,
+            text="🐾 ¿Qué raza parece ser?",
             reply_markup=InlineKeyboardMarkup(keyboard),
         )
 
@@ -341,16 +335,7 @@ async def handle_record_text(
             )
             return
 
-        if subject_type == "animal":
-            extra = (
-                f"Especie: {context.user_data.get('animal_species', 'unknown')}\n"
-                f"Tamaño: {context.user_data.get('animal_size', 'unknown')}\n"
-                f"Raza aproximada: {context.user_data.get('animal_breed', 'unknown')}\n\n"
-            )
-            context.user_data["description"] = extra + text
-        else:
-            context.user_data["description"] = text
-
+        context.user_data["description"] = text
         context.user_data["record_step"] = states.REVIEW
 
         await review_record(update, context)
