@@ -1,15 +1,13 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
 
+from app.conversation import states
+
 
 async def ask_estimated_age(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
 ) -> None:
-    """
-    Starts the Create Record form after selecting the event type.
-    """
-
     query = update.callback_query
 
     if not query:
@@ -20,9 +18,8 @@ async def ask_estimated_age(
     event_type = query.data.replace("event_", "")
 
     context.user_data.clear()
-
     context.user_data["event_type"] = event_type
-    context.user_data["record_step"] = "estimated_age"
+    context.user_data["record_step"] = states.ESTIMATED_AGE
 
     await query.edit_message_text(
         text=(
@@ -42,9 +39,8 @@ async def ask_reporter_source(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
 ) -> None:
-    """
-    Displays the reporter source options.
-    """
+    if not update.message:
+        return
 
     keyboard = [
         [InlineKeyboardButton("👨‍👩‍👧 Familia", callback_data="source_family")],
@@ -67,10 +63,6 @@ async def handle_reporter_source(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
 ) -> None:
-    """
-    Saves the selected reporter source.
-    """
-
     query = update.callback_query
 
     if not query:
@@ -81,7 +73,7 @@ async def handle_reporter_source(
     source = query.data.replace("source_", "")
 
     context.user_data["source"] = source
-    context.user_data["record_step"] = "description"
+    context.user_data["record_step"] = states.DESCRIPTION
 
     await query.edit_message_text(
         text=(
@@ -95,25 +87,15 @@ async def handle_record_text(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
 ) -> None:
-    """
-    Handles all text input during the Create Record flow.
-    """
-
     if not update.message:
         return
 
     text = update.message.text.strip()
-
     step = context.user_data.get("record_step")
 
-    #
-    # Estimated Age
-    #
-
-    if step == "estimated_age":
-
+    if step == states.ESTIMATED_AGE:
         context.user_data["estimated_age"] = text
-        context.user_data["record_step"] = "reported_name"
+        context.user_data["record_step"] = states.REPORTED_NAME
 
         await update.message.reply_text(
             "👤 ¿Sabes el nombre de la persona?\n\n"
@@ -121,17 +103,11 @@ async def handle_record_text(
             "Si no lo sabes, escribe:\n\n"
             "Desconocido"
         )
-
         return
 
-    #
-    # Reported Name
-    #
-
-    if step == "reported_name":
-
+    if step == states.REPORTED_NAME:
         context.user_data["reported_name"] = text
-        context.user_data["record_step"] = "reported_location"
+        context.user_data["record_step"] = states.REPORTED_LOCATION
 
         await update.message.reply_text(
             "📍 ¿En qué localización está esa persona?\n\n"
@@ -142,38 +118,21 @@ async def handle_record_text(
             "- Refugio\n"
             "- Punto de referencia"
         )
-
         return
 
-    #
-    # Location
-    #
-
-    if step == "reported_location":
-
+    if step == states.REPORTED_LOCATION:
         context.user_data["reported_location"] = text
-        context.user_data["record_step"] = "source"
+        context.user_data["record_step"] = states.SOURCE
 
         await ask_reporter_source(update, context)
-
         return
 
-    #
-    # Description
-    #
-
-    if step == "description":
-
+    if step == states.DESCRIPTION:
         context.user_data["description"] = text
-
-        #
-        # Next sprint:
-        # review.py
-        #
+        context.user_data["record_step"] = states.REVIEW
 
         await update.message.reply_text(
             "✅ Información recibida.\n\n"
             "En el siguiente paso podrás revisar el reporte antes de enviarlo."
         )
-
         return
