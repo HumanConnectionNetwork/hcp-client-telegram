@@ -2,12 +2,10 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
 
 from app.conversation import states
-from app.conversation.create_record.form import ANIMAL_BREED_TEXT
 from app.conversation.create_record.review import review_record
 
 
 EDIT_FIELD_KEY = "edit_field"
-EDIT_TEXT_STEP = "edit_text"
 
 
 async def show_edit_menu(
@@ -70,7 +68,7 @@ async def handle_edit_choice(
     context.user_data[EDIT_FIELD_KEY] = choice
 
     if choice == "estimated_age":
-        context.user_data["record_step"] = EDIT_TEXT_STEP
+        context.user_data["record_step"] = states.EDIT_TEXT
         await query.edit_message_text(
             text=(
                 "🎂 Escribe la nueva edad estimada.\n\n"
@@ -82,7 +80,7 @@ async def handle_edit_choice(
         return
 
     if choice == "reported_name":
-        context.user_data["record_step"] = EDIT_TEXT_STEP
+        context.user_data["record_step"] = states.EDIT_TEXT
         await query.edit_message_text(
             text=(
                 "👤 Escribe el nuevo nombre reportado.\n\n"
@@ -93,7 +91,7 @@ async def handle_edit_choice(
         return
 
     if choice == "reported_location":
-        context.user_data["record_step"] = EDIT_TEXT_STEP
+        context.user_data["record_step"] = states.EDIT_TEXT
         await query.edit_message_text(
             text=(
                 "📍 Escribe la nueva localización.\n\n"
@@ -104,7 +102,7 @@ async def handle_edit_choice(
         return
 
     if choice == "description":
-        context.user_data["record_step"] = EDIT_TEXT_STEP
+        context.user_data["record_step"] = states.EDIT_TEXT
         await query.edit_message_text(
             text=(
                 "📝 Escribe la nueva descripción.\n\n"
@@ -279,7 +277,7 @@ async def handle_edit_animal_breed(
 
     if breed == "known":
         context.user_data[EDIT_FIELD_KEY] = "animal_breed"
-        context.user_data["record_step"] = ANIMAL_BREED_TEXT
+        context.user_data["record_step"] = states.ANIMAL_BREED_TEXT
         await query.edit_message_text(
             text=(
                 "🐾 Escribe la nueva raza aproximada.\n\n"
@@ -304,13 +302,13 @@ async def handle_edit_text(
 
     step = context.user_data.get("record_step")
 
-    if step not in [EDIT_TEXT_STEP, ANIMAL_BREED_TEXT]:
+    if step not in [states.EDIT_TEXT, states.ANIMAL_BREED_TEXT]:
         return False
 
     text = update.message.text.strip()
     field = context.user_data.get(EDIT_FIELD_KEY)
 
-    if step == ANIMAL_BREED_TEXT:
+    if step == states.ANIMAL_BREED_TEXT:
         if len(text) > 40:
             await update.message.reply_text(
                 "⚠️ La raza debe tener máximo 40 caracteres.\n\n"
