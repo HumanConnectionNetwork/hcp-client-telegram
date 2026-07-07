@@ -10,7 +10,9 @@ from app.config import settings
 from app.conversation.create_record import (
     ask_estimated_age,
     create_record_menu,
+    handle_animal_breed,
     handle_animal_size,
+    handle_animal_species,
     handle_record_text,
     handle_reporter_source,
     select_subject_type,
@@ -56,7 +58,15 @@ def main() -> None:
     )
 
     application.add_handler(
+        CallbackQueryHandler(handle_animal_species, pattern="^animal_species_")
+    )
+
+    application.add_handler(
         CallbackQueryHandler(handle_animal_size, pattern="^animal_size_")
+    )
+
+    application.add_handler(
+        CallbackQueryHandler(handle_animal_breed, pattern="^animal_breed_")
     )
 
     application.add_handler(
