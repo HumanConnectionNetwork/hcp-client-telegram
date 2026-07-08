@@ -8,7 +8,7 @@ from app.conversation.create_record.review import review_record
 
 MAX_NAME_LENGTH = 80
 MAX_LOCATION_LENGTH = 120
-MAX_DESCRIPTION_LENGTH = 300
+MAX_RECOGNITION_FEATURES_LENGTH = 300
 MAX_BREED_LENGTH = 40
 
 
@@ -218,12 +218,42 @@ async def handle_reporter_source(
     source = query.data.replace("source_", "")
 
     context.user_data["source"] = source
-    context.user_data["record_step"] = states.DESCRIPTION
+    context.user_data["record_step"] = states.RECOGNITION_FEATURES
+
+    subject_type = context.user_data.get("subject_type", "human")
+
+    if subject_type == "animal":
+        examples = (
+            "Ejemplos:\n"
+            "• Collar rojo\n"
+            "• Pelaje marrón\n"
+            "• Mancha blanca en el pecho\n"
+            "• Oreja izquierda cortada\n"
+            "• Arnés azul\n"
+            "• Cojea de una pata"
+        )
+    else:
+        examples = (
+            "Ejemplos:\n"
+            "• Camisa azul y pantalón negro\n"
+            "• Vestido rojo\n"
+            "• Chaqueta negra\n"
+            "• Usa lentes\n"
+            "• Tatuaje en el brazo derecho\n"
+            "• Cicatriz en la frente\n"
+            "• Mochila gris\n"
+            "• Cabello largo y rizado"
+        )
 
     await query.edit_message_text(
         text=(
-            "📝 Describe brevemente la situación.\n\n"
-            "Escribe únicamente información útil y relevante.\n\n"
+            "🆔 Características de identificación\n\n"
+            "Ayúdanos a identificar este caso.\n\n"
+            "Describe la vestimenta o cualquier característica visible que facilite reconocer "
+            "a la persona o al animal.\n\n"
+            "Puedes mencionar ropa, colores, lentes, tatuajes, cicatrices, mochila, collar "
+            "u otros detalles visibles.\n\n"
+            f"{examples}\n\n"
             "Máximo 300 caracteres."
         )
     )
@@ -326,15 +356,15 @@ async def handle_record_text(
         await ask_reporter_source(update, context)
         return
 
-    if step == states.DESCRIPTION:
-        if len(text) > MAX_DESCRIPTION_LENGTH:
+    if step == states.RECOGNITION_FEATURES:
+        if len(text) > MAX_RECOGNITION_FEATURES_LENGTH:
             await update.message.reply_text(
-                "⚠️ La descripción debe tener máximo 300 caracteres.\n\n"
+                "⚠️ Las características de identificación deben tener máximo 300 caracteres.\n\n"
                 "Intenta escribir una versión más corta."
             )
             return
 
-        context.user_data["description"] = text
+        context.user_data["recognition_features"] = text
         context.user_data["record_step"] = states.REVIEW
 
         await review_record(update, context)
