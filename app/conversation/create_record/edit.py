@@ -28,7 +28,7 @@ async def show_edit_menu(
             [InlineKeyboardButton("👤 Nombre", callback_data="edit_reported_name")],
             [InlineKeyboardButton("📍 Localización", callback_data="edit_reported_location")],
             [InlineKeyboardButton("📣 Fuente", callback_data="edit_source")],
-            [InlineKeyboardButton("📝 Descripción", callback_data="edit_description")],
+            [InlineKeyboardButton("🆔 Características de identificación", callback_data="edit_recognition_features")],
             [InlineKeyboardButton("⬅️ Volver al resumen", callback_data="edit_back_to_review")],
             [InlineKeyboardButton("❌ Cancelar", callback_data="review_cancel")],
         ]
@@ -38,7 +38,7 @@ async def show_edit_menu(
             [InlineKeyboardButton("👤 Nombre", callback_data="edit_reported_name")],
             [InlineKeyboardButton("📍 Localización", callback_data="edit_reported_location")],
             [InlineKeyboardButton("📣 Fuente", callback_data="edit_source")],
-            [InlineKeyboardButton("📝 Descripción", callback_data="edit_description")],
+            [InlineKeyboardButton("🆔 Características de identificación", callback_data="edit_recognition_features")],
             [InlineKeyboardButton("⬅️ Volver al resumen", callback_data="edit_back_to_review")],
             [InlineKeyboardButton("❌ Cancelar", callback_data="review_cancel")],
         ]
@@ -101,14 +101,18 @@ async def handle_edit_choice(
         )
         return
 
-    if choice == "description":
+    if choice == "recognition_features":
         context.user_data["record_step"] = states.EDIT_TEXT
         await query.edit_message_text(
-            text=(
-                "📝 Escribe la nueva descripción.\n\n"
-                "Máximo 300 caracteres."
-            )
-        )
+    text=(
+        "🆔 Características de identificación\n\n"
+        "Describe la vestimenta o cualquier característica visible que facilite reconocer "
+        "a la persona o al animal.\n\n"
+        "Puedes mencionar ropa, colores, lentes, tatuajes, cicatrices, mochila, collar "
+        "u otros detalles visibles.\n\n"
+        "Máximo 300 caracteres."
+    )
+)
         return
 
     if choice == "source":
@@ -353,14 +357,14 @@ async def handle_edit_text(
 
         context.user_data["reported_location"] = text
 
-    elif field == "description":
+    elif field == "recognition_features":
         if len(text) > 300:
             await update.message.reply_text(
-                "⚠️ La descripción debe tener máximo 300 caracteres."
+                "⚠️ Las características de identificación deben tener máximo 300 caracteres."
             )
             return True
 
-        context.user_data["description"] = text
+        context.user_data["recognition_features"] = text
 
     else:
         return False
