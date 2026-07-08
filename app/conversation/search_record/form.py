@@ -73,8 +73,8 @@ async def handle_search_text(
         return
 
     if step == states.REPORTED_LOCATION:
-    context.user_data["search_reported_location"] = text
-    context.user_data["search_step"] = states.RECOGNITION_FEATURES
+        context.user_data["search_reported_location"] = text
+        context.user_data["search_step"] = states.RECOGNITION_FEATURES
     await update.message.reply_text(
     "🆔 Características de identificación\n\n"
     "Describe la vestimenta o cualquier característica visible que recuerdes.\n\n"
