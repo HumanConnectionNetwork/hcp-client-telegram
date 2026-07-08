@@ -8,7 +8,7 @@ class HumanitarianRecord:
     Humanitarian Record defined by HCP.
 
     A Humanitarian Record represents a humanitarian observation
-    about a living being.
+    composed of correlation variables.
 
     It is not an identity record.
     """
@@ -21,7 +21,7 @@ class HumanitarianRecord:
     reported_location: str
 
     source: str
-    description: str
+    recognition_features: str
 
     status: str = "reported"
 
