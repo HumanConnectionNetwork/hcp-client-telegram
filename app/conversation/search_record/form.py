@@ -73,8 +73,29 @@ async def handle_search_text(
         return
 
     if step == states.REPORTED_LOCATION:
-        context.user_data["search_reported_location"] = text
+    context.user_data["search_reported_location"] = text
+    context.user_data["search_step"] = states.RECOGNITION_FEATURES
+    await update.message.reply_text(
+    "🆔 Características de identificación\n\n"
+    "Describe la vestimenta o cualquier característica visible que recuerdes.\n\n"
+    "Puedes mencionar ropa, colores, lentes, tatuajes, cicatrices, mochila, collar u otros detalles visibles.\n\n"
+    "Esta información puede ayudar a encontrar observaciones relacionadas aunque el nombre o la edad sean imprecisos.\n\n"
+    "Máximo 300 caracteres."
+)
+    return
+
+    if step == states.RECOGNITION_FEATURES:
+        if len(text) > 300:
+            await update.message.reply_text(
+                "⚠️ Las características de identificación deben tener máximo 300 caracteres.\n\n"
+                "Intenta escribir una versión más corta."
+            )
+            return
+
+        context.user_data["search_recognition_features"] = text
         context.user_data["search_step"] = states.REVIEW
 
         await show_mock_search_results(update, context)
         return
+
+
