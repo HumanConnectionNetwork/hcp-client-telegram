@@ -20,8 +20,7 @@ async def ask_search_estimated_age(
 
     context.user_data.clear()
     context.user_data["search_event_type"] = event_type
-    context.user_data["search_step"] = states.ESTIMATED_AGE
-
+    context.user_data["search_step"] = states.REPORTED_NAME
     await query.edit_message_text(
         text=(
             "🎂 ¿Qué edad aproximada tiene la persona que buscas?\n\n"
@@ -43,45 +42,51 @@ async def handle_search_text(
     step = context.user_data.get("search_step")
 
     if step == states.ESTIMATED_AGE:
-        if not text.isdigit():
-            await update.message.reply_text(
-                "⚠️ La edad debe ser un número.\n\n"
-                "Ejemplo:\n"
-                "45"
-            )
-            return
+    context.user_data["search_estimated_age"] = text
+    context.user_data["search_step"] = states.REPORTED_LOCATION
+
+    await update.message.reply_text(
+        "📍 ¿Dónde fue vista por última vez o dónde fue reportada?\n\n"
+        "Puedes escribir ciudad, barrio, hospital, refugio o punto de referencia.\n\n"
+        "Si no lo sabes, escribe:\n"
+        "Desconocido"
+    )
+    return
 
         context.user_data["search_estimated_age"] = text
         context.user_data["search_step"] = states.REPORTED_NAME
 
-        await update.message.reply_text(
-            "👤 ¿Sabes el nombre reportado?\n\n"
-            "Si lo sabes, escríbelo.\n"
-            "Si no lo sabes, escribe:\n\n"
-            "Desconocido"
-        )
+        text=(
+        "👤 ¿Conoces el nombre reportado?\n\n"
+        "Si lo conoces, escríbelo.\n\n"
+        "Si no lo conoces, escribe:\n"
+        "Desconocido"
+    )
+)
         return
 
     if step == states.REPORTED_NAME:
-        context.user_data["search_reported_name"] = text
-        context.user_data["search_step"] = states.REPORTED_LOCATION
+    context.user_data["search_reported_name"] = text
+    context.user_data["search_step"] = states.ESTIMATED_AGE
 
-        await update.message.reply_text(
-            "📍 ¿En qué localización fue reportada esa persona?\n\n"
-            "Puedes escribir ciudad, barrio, hospital, refugio o punto de referencia."
-        )
-        return
+    await update.message.reply_text(
+        "🎂 ¿Qué edad aproximada tiene?\n\n"
+        "Puedes escribir un número, una referencia como Adulto, Niño, Anciano, o escribir:\n"
+        "Desconocida"
+    )
+    return
 
     if step == states.REPORTED_LOCATION:
-        context.user_data["search_reported_location"] = text
-        context.user_data["search_step"] = states.RECOGNITION_FEATURES
+       context.user_data["search_reported_location"] = text
+       context.user_data["search_step"] = states.RECOGNITION_FEATURES
+
     await update.message.reply_text(
-    "🆔 Características de identificación\n\n"
-    "Describe la vestimenta o cualquier característica visible que recuerdes.\n\n"
-    "Puedes mencionar ropa, colores, lentes, tatuajes, cicatrices, mochila, collar u otros detalles visibles.\n\n"
-    "Esta información puede ayudar a encontrar observaciones relacionadas aunque el nombre o la edad sean imprecisos.\n\n"
-    "Máximo 300 caracteres."
-)
+        "🆔 Características de identificación\n\n"
+        "Describe la vestimenta o cualquier característica visible que recuerdes.\n\n"
+        "Puedes mencionar ropa, colores, lentes, tatuajes, cicatrices, mochila, collar u otros detalles visibles.\n\n"
+        "Esta información puede ayudar a encontrar observaciones relacionadas aunque el nombre o la edad sean imprecisos.\n\n"
+        "Máximo 300 caracteres."
+    )
     return
 
     if step == states.RECOGNITION_FEATURES:
