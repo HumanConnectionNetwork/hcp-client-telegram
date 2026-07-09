@@ -227,27 +227,27 @@ async def handle_reporter_source(update: Update, context: ContextTypes.DEFAULT_T
     subject_type = context.user_data.get("subject_type", "human")
 
     if subject_type == "animal":
-        examples = (
-            "Ejemplos:\n"
-            "• 🦺 Collar rojo\n"
-            "• 🎨 Pelaje marrón\n"
-            "• ⚪ Mancha blanca en el pecho\n"
-            "• 🩹 Oreja izquierda cortada\n"
-            "• 🎒 Arnés azul\n"
-            "• 🐾 Cojea de una pata"
-        )
-    else:
-        examples = (
-            "Ejemplos:\n"
-            "• 👕 Camisa azul y pantalón negro\n"
-            "• 👗 Vestido rojo\n"
-            "• 🧥 Chaqueta negra\n"
-            "• 👓 Usa lentes\n"
-            "• 🖋️ Tatuaje en el brazo derecho\n"
-            "• 🩹 Cicatriz en la frente\n"
-            "• 🎒 Mochila gris\n"
-            "• 💇 Cabello largo y rizado"
-        )
+    examples = (
+        "Ejemplos:\n"
+        "• 🦺 Collar rojo\n"
+        "• 🎨 Pelaje marrón\n"
+        "• ⚪ Mancha blanca en el pecho\n"
+        "• 🩹 Oreja izquierda cortada\n"
+        "• 🎒 Arnés azul\n"
+        "• 🐾 Cojea de una pata"
+    )
+else:
+    examples = (
+        "Ejemplos:\n"
+        "• 👕 Camisa azul y pantalón negro\n"
+        "• 👗 Vestido rojo\n"
+        "• 🧥 Chaqueta negra\n"
+        "• 👓 Usa lentes\n"
+        "• 🖋️ Tatuaje en el brazo derecho\n"
+        "• 🩹 Cicatriz en la frente\n"
+        "• 🎒 Mochila gris\n"
+        "• 💇 Cabello largo y rizado"
+    )
 
     await query.edit_message_text(
         text=(
