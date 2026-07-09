@@ -236,8 +236,8 @@ async def handle_reporter_source(update: Update, context: ContextTypes.DEFAULT_T
             "• 🎒 Arnés azul\n"
             "• 🐾 Cojea de una pata"
     )
-else:
-     examples = (
+   else:
+       examples = (
             "Ejemplos:\n"
             "• 👕 Camisa azul y pantalón negro\n"
             "• 👗 Vestido rojo\n"
