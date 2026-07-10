@@ -83,6 +83,29 @@ def add_record(
     records.append(record)
     save_records(records)
 
+def load_record_by_id(
+    record_id: str,
+) -> dict[str, Any] | None:
+    """
+    Returns one HCP record matching the supplied UUID.
+
+    The comparison ignores surrounding whitespace and letter casing.
+    Returns None when the record does not exist.
+    """
+
+    normalized_id = str(record_id).strip().lower()
+
+    if not normalized_id:
+        return None
+
+    for record in load_records():
+        stored_id = str(record.get("id", "")).strip().lower()
+
+        if stored_id == normalized_id:
+            return record
+
+    return None
+
 
 def load_record_by_id(
     record_id: str,
