@@ -9,6 +9,7 @@ from app.conversation.create_record.review import review_record
 MAX_NAME_LENGTH = 80
 MAX_LOCATION_LENGTH = 120
 MAX_RECOGNITION_FEATURES_LENGTH = 300
+MAX_PUBLIC_CONTACT_LENGTH = 160
 MAX_BREED_LENGTH = 40
 
 
@@ -21,8 +22,12 @@ ANIMAL_ICONS = {
 }
 
 
-async def ask_estimated_age(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def ask_estimated_age(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+) -> None:
     query = update.callback_query
+
     if not query:
         return
 
@@ -50,15 +55,43 @@ async def ask_estimated_age(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     )
 
 
-async def show_animal_species_options(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def show_animal_species_options(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+) -> None:
     query = update.callback_query
 
     keyboard = [
-        [InlineKeyboardButton("🐕 Perro", callback_data="animal_species_dog")],
-        [InlineKeyboardButton("🐈 Gato", callback_data="animal_species_cat")],
-        [InlineKeyboardButton("🐎 Caballo", callback_data="animal_species_horse")],
-        [InlineKeyboardButton("🦜 Ave", callback_data="animal_species_bird")],
-        [InlineKeyboardButton("🐾 Otro / No sé", callback_data="animal_species_unknown")],
+        [
+            InlineKeyboardButton(
+                "🐕 Perro",
+                callback_data="animal_species_dog",
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "🐈 Gato",
+                callback_data="animal_species_cat",
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "🐎 Caballo",
+                callback_data="animal_species_horse",
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "🦜 Ave",
+                callback_data="animal_species_bird",
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "🐾 Otro / No sé",
+                callback_data="animal_species_unknown",
+            )
+        ],
     ]
 
     if query:
@@ -68,8 +101,12 @@ async def show_animal_species_options(update: Update, context: ContextTypes.DEFA
         )
 
 
-async def handle_animal_species(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def handle_animal_species(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+) -> None:
     query = update.callback_query
+
     if not query:
         return
 
@@ -82,17 +119,40 @@ async def handle_animal_species(update: Update, context: ContextTypes.DEFAULT_TY
     await show_animal_size_options(update, context)
 
 
-async def show_animal_size_options(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def show_animal_size_options(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+) -> None:
     query = update.callback_query
 
     species = context.user_data.get("animal_species", "unknown")
     icon = ANIMAL_ICONS.get(species, "🐾")
 
     keyboard = [
-        [InlineKeyboardButton(f"{icon} Grande", callback_data="animal_size_large")],
-        [InlineKeyboardButton(f"{icon} Mediano", callback_data="animal_size_medium")],
-        [InlineKeyboardButton(f"{icon} Pequeño", callback_data="animal_size_small")],
-        [InlineKeyboardButton("❓ Desconocido", callback_data="animal_size_unknown")],
+        [
+            InlineKeyboardButton(
+                f"{icon} Grande",
+                callback_data="animal_size_large",
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                f"{icon} Mediano",
+                callback_data="animal_size_medium",
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                f"{icon} Pequeño",
+                callback_data="animal_size_small",
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "❓ Desconocido",
+                callback_data="animal_size_unknown",
+            )
+        ],
     ]
 
     if query:
@@ -102,8 +162,12 @@ async def show_animal_size_options(update: Update, context: ContextTypes.DEFAULT
         )
 
 
-async def handle_animal_size(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def handle_animal_size(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+) -> None:
     query = update.callback_query
+
     if not query:
         return
 
@@ -116,16 +180,34 @@ async def handle_animal_size(update: Update, context: ContextTypes.DEFAULT_TYPE)
     await show_animal_breed_options(update, context)
 
 
-async def show_animal_breed_options(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def show_animal_breed_options(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+) -> None:
     query = update.callback_query
 
     species = context.user_data.get("animal_species", "unknown")
     icon = ANIMAL_ICONS.get(species, "🐾")
 
     keyboard = [
-        [InlineKeyboardButton(f"{icon} Raza / especie conocida", callback_data="animal_breed_known")],
-        [InlineKeyboardButton(f"{icon} Mestizo / Criollo", callback_data="animal_breed_mixed")],
-        [InlineKeyboardButton("❓ Desconocida", callback_data="animal_breed_unknown")],
+        [
+            InlineKeyboardButton(
+                f"{icon} Raza / especie conocida",
+                callback_data="animal_breed_known",
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                f"{icon} Mestizo / Criollo",
+                callback_data="animal_breed_mixed",
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "❓ Desconocida",
+                callback_data="animal_breed_unknown",
+            )
+        ],
     ]
 
     if query:
@@ -135,8 +217,12 @@ async def show_animal_breed_options(update: Update, context: ContextTypes.DEFAUL
         )
 
 
-async def handle_animal_breed(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def handle_animal_breed(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+) -> None:
     query = update.callback_query
+
     if not query:
         return
 
@@ -151,7 +237,9 @@ async def handle_animal_breed(update: Update, context: ContextTypes.DEFAULT_TYPE
         species = context.user_data.get("animal_species", "unknown")
 
         breed_examples = {
-            "dog": "Rottweiler, Pastor Alemán, Golden Retriever, mestizo",
+            "dog": (
+                "Rottweiler, Pastor Alemán, Golden Retriever, mestizo"
+            ),
             "cat": "Siamés, Angora, Persa, mestizo",
             "horse": "Pura sangre, Criollo, Cuarto de milla",
             "bird": "Loro, Guacamaya, Periquito, Canario",
@@ -166,9 +254,15 @@ async def handle_animal_breed(update: Update, context: ContextTypes.DEFAULT_TYPE
             "unknown": "raza, tipo o especie aproximada",
         }
 
-        example = breed_examples.get(species, breed_examples["unknown"])
+        example = breed_examples.get(
+            species,
+            breed_examples["unknown"],
+        )
         icon = ANIMAL_ICONS.get(species, "🐾")
-        label = species_labels.get(species, species_labels["unknown"])
+        label = species_labels.get(
+            species,
+            species_labels["unknown"],
+        )
 
         await query.edit_message_text(
             text=(
@@ -192,18 +286,56 @@ async def handle_animal_breed(update: Update, context: ContextTypes.DEFAULT_TYPE
     )
 
 
-async def ask_reporter_source(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def ask_reporter_source(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+) -> None:
     if not update.message:
         return
 
     keyboard = [
-        [InlineKeyboardButton("👨‍👩‍👧 Familia", callback_data="source_family")],
-        [InlineKeyboardButton("🏥 Hospital", callback_data="source_hospital")],
-        [InlineKeyboardButton("🚒 Bomberos", callback_data="source_fire_department")],
-        [InlineKeyboardButton("🤝 Voluntario", callback_data="source_volunteer")],
-        [InlineKeyboardButton("👮 Policía", callback_data="source_police")],
-        [InlineKeyboardButton("👤 Amigo / Conocido", callback_data="source_friend")],
-        [InlineKeyboardButton("❓ Desconocido", callback_data="source_unknown")],
+        [
+            InlineKeyboardButton(
+                "👨‍👩‍👧 Familia",
+                callback_data="source_family",
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "🏥 Hospital",
+                callback_data="source_hospital",
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "🚒 Bomberos",
+                callback_data="source_fire_department",
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "🤝 Voluntario",
+                callback_data="source_volunteer",
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "👮 Policía",
+                callback_data="source_police",
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "👤 Amigo / Conocido",
+                callback_data="source_friend",
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "❓ Desconocido",
+                callback_data="source_unknown",
+            )
+        ],
     ]
 
     await update.message.reply_text(
@@ -213,8 +345,12 @@ async def ask_reporter_source(update: Update, context: ContextTypes.DEFAULT_TYPE
     )
 
 
-async def handle_reporter_source(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def handle_reporter_source(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+) -> None:
     query = update.callback_query
+
     if not query:
         return
 
@@ -264,16 +400,54 @@ async def handle_reporter_source(update: Update, context: ContextTypes.DEFAULT_T
             "🧩 Características para identificación\n\n"
             f"{description}"
             f"{examples}\n\n"
-            "☎️ CONTACTO PÚBLICO (opcional)\n"
-            "Si corresponde, puedes incluir un medio de contacto público "
-            "proporcionado por quien reporta el caso, por ejemplo un número de teléfono.\n\n"
-            "Este contacto forma parte únicamente de esta observación y no será utilizado "
-            "como criterio de búsqueda o correlación.\n\n"
             "Máximo 300 caracteres."
         )
     )
 
-async def handle_record_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+
+async def ask_public_contact(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+) -> None:
+    """
+    Explains the optional public contact field.
+
+    The value is stored with the observation but never used as a
+    correlation variable.
+    """
+
+    if not update.message:
+        return
+
+    await update.message.reply_text(
+        text=(
+            "📞 Medio de contacto (opcional)\n\n"
+            "Human Connection Protocol está diseñado para conectar "
+            "observaciones humanitarias sin crear una base de datos central "
+            "de personas o contactos.\n\n"
+            "Si deseas que otra persona pueda comunicarse contigo acerca de "
+            "este caso, puedes compartir un medio de contacto.\n\n"
+            "Por ejemplo:\n\n"
+            "📱 Número de teléfono\n"
+            "💬 Usuario de Telegram\n"
+            "📧 Correo electrónico\n\n"
+            "Este dato:\n\n"
+            "✅ No participa en la correlación del caso.\n"
+            "✅ No se utiliza para encontrar personas o animales.\n"
+            "✅ No forma parte de una base de datos central de contactos.\n\n"
+            "Su único propósito es facilitar que otra persona pueda "
+            "comunicarse contigo si cree que encontró información relacionada "
+            "con este caso.\n\n"
+            "📞 ¿Qué medio de contacto deseas compartir?\n\n"
+            "Máximo 160 caracteres."
+        )
+    )
+
+
+async def handle_record_text(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+) -> None:
     if await handle_edit_text(update, context):
         return
 
@@ -318,7 +492,8 @@ async def handle_record_text(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
             await update.message.reply_text(
                 "📍 ¿Dónde se encuentra o fue visto el animal?\n\n"
-                "Puedes escribir ciudad, barrio, refugio, clínica veterinaria o punto de referencia.\n\n"
+                "Puedes escribir ciudad, barrio, refugio, clínica veterinaria "
+                "o punto de referencia.\n\n"
                 "Máximo 120 caracteres."
             )
             return
@@ -374,12 +549,28 @@ async def handle_record_text(update: Update, context: ContextTypes.DEFAULT_TYPE)
     if step == states.RECOGNITION_FEATURES:
         if len(text) > MAX_RECOGNITION_FEATURES_LENGTH:
             await update.message.reply_text(
-                "⚠️ Las características de identificación deben tener máximo 300 caracteres.\n\n"
+                "⚠️ Las características de identificación deben tener "
+                "máximo 300 caracteres.\n\n"
                 "Intenta escribir una versión más corta."
             )
             return
 
         context.user_data["recognition_features"] = text
+        context.user_data["record_step"] = states.PUBLIC_CONTACT_TEXT
+
+        await ask_public_contact(update, context)
+        return
+
+    if step == states.PUBLIC_CONTACT_TEXT:
+        if len(text) > MAX_PUBLIC_CONTACT_LENGTH:
+            await update.message.reply_text(
+                "⚠️ El medio de contacto debe tener máximo "
+                "160 caracteres.\n\n"
+                "Intenta escribir una versión más corta."
+            )
+            return
+
+        context.user_data["public_contact"] = text
         context.user_data["record_step"] = states.REVIEW
 
         await review_record(update, context)
