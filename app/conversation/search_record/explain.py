@@ -2,62 +2,133 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
 
 
-MOCK_EXPLANATIONS = {
-    "candidate_1": {
-        "probability": 68,
-        "matches": [
-            "Ubicación compatible con la búsqueda.",
-            "El contexto del reporte es similar.",
-            "La fuente del reporte puede ser relevante.",
-        ],
-        "warnings": [
-            "El nombre no coincide completamente.",
-            "La edad estimada necesita verificación humana.",
-        ],
-    },
-    "candidate_2": {
-        "probability": 52,
-        "matches": [
-            "El nombre reportado es parecido.",
-            "La edad estimada es compatible.",
-        ],
-        "warnings": [
-            "La ubicación es diferente.",
-            "La probabilidad es moderada.",
-        ],
-    },
-    "candidate_3": {
-        "probability": 35,
-        "matches": [
-            "Existen algunas similitudes generales.",
-        ],
-        "warnings": [
-            "Hay pocos datos compatibles.",
-            "Este caso no debe interpretarse como una coincidencia probable.",
-        ],
-    },
-    "weak_candidate_1": {
-        "probability": 28,
-        "matches": [
-            "Existen similitudes generales de contexto.",
-        ],
-        "warnings": [
-            "El nombre no coincide.",
-            "La probabilidad es baja.",
-            "Debe verificarse cuidadosamente antes de compartirlo como posible coincidencia.",
-        ],
-    },
+EVENT_TYPE_LABELS = {
+    "missing_person": "🚨 Persona desaparecida",
+    "hospitalized_person": "🏥 Persona hospitalizada",
+    "sheltered_person": "🏠 Persona refugiada",
+    "safe_person": "✅ Persona localizada",
+    "missing_animal": "🐾 Animal perdido",
+    "found_animal": "✅ Animal encontrado",
 }
 
 
-def _format_list(items: list[str], icon: str) -> str:
-    return "\n".join(f"{icon} {item}" for item in items)
+def _format_unknown(value: object) -> str:
+    if value is None:
+        return "No especificado"
+
+    text = str(value).strip()
+
+    if not text or text == "0":
+        return "No especificado"
+
+    return text
+
+
+def _event_type_label(value: object) -> str:
+    key = str(value or "").strip()
+
+    return EVENT_TYPE_LABELS.get(
+        key,
+        _format_unknown(value),
+    )
+
+
+def _format_items(items: list[str], icon: str) -> str:
+    if not items:
+        return f"{icon} No se registraron elementos en esta sección."
+
+    return "\n".join(
+        f"{icon} {item}"
+        for item in items
+    )
+
+
+def _probability_interpretation(probability: int) -> str:
+    if probability >= 80:
+        return (
+            "La observación presenta una compatibilidad alta con los datos "
+            "proporcionados."
+        )
+
+    if probability >= 60:
+        return (
+            "La observación presenta varias coincidencias relevantes, "
+            "pero todavía requiere verificación."
+        )
+
+    if probability >= 40:
+        return (
+            "La observación presenta una compatibilidad moderada. "
+            "Debe revisarse con precaución."
+        )
+
+    return (
+        "La observación presenta pocas coincidencias. "
+        "Se muestra únicamente como una posible referencia."
+    )
+
+
+def _format_record_summary(record: dict) -> str:
+    subject_type = record.get("subject_type", "human")
+
+    summary = (
+        f"Tipo de observación: {_event_type_label(record.get('event_type'))}\n"
+        f"Nombre reportado: {_format_unknown(record.get('reported_name'))}\n"
+        f"Ubicación reportada: "
+        f"{_format_unknown(record.get('reported_location'))}\n"
+    )
+
+    if subject_type == "animal":
+        summary += (
+            f"Especie: {_format_unknown(record.get('animal_species'))}\n"
+            f"Tamaño: {_format_unknown(record.get('animal_size'))}\n"
+            f"Raza / tipo: {_format_unknown(record.get('animal_breed'))}\n"
+        )
+    else:
+        summary += (
+            f"Edad estimada: "
+            f"{_format_unknown(record.get('estimated_age'))}\n"
+        )
+
+    summary += (
+        f"Características: "
+        f"{_format_unknown(record.get('recognition_features'))}\n"
+        f"ID HCP: {_format_unknown(record.get('id'))}"
+    )
+
+    return summary
+
+
+def _navigation_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton(
+                    "🔍 Nueva búsqueda",
+                    callback_data="search_menu",
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    "⬅️ Volver al menú principal",
+                    callback_data="back_to_start",
+                )
+            ],
+        ]
+    )
 
 
 async def explain_search_result(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
 ) -> None:
+    """
+    Displays the real explanation generated by the correlation engine.
+
+    The explanation is stored temporarily in context.user_data when
+    search results are generated.
+    """
+
     query = update.callback_query
 
     if not query:
@@ -65,66 +136,60 @@ async def explain_search_result(
 
     await query.answer()
 
-    candidate_id = query.data.replace("explain_", "")
-    explanation = MOCK_EXPLANATIONS.get(candidate_id)
+    candidate_id = query.data.removeprefix("explain_")
+
+    explanations = context.user_data.get(
+        "search_explanations",
+        {},
+    )
+
+    explanation = explanations.get(candidate_id)
 
     if not explanation:
         await query.edit_message_text(
             text=(
                 "ℹ️ Explicación no disponible\n\n"
-                "No fue posible encontrar los detalles de correlación para este caso."
+                "No fue posible recuperar los detalles de correlación "
+                "de este posible caso relacionado.\n\n"
+                "Esto puede ocurrir si la búsqueda anterior ya no está activa "
+                "o si se inició una nueva conversación."
             ),
-            reply_markup=InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton(
-                            "🔍 Nueva búsqueda",
-                            callback_data="search_menu",
-                        )
-                    ],
-                    [
-                        InlineKeyboardButton(
-                            "⬅️ Volver al menú principal",
-                            callback_data="back_to_start",
-                        )
-                    ],
-                ]
-            ),
+            reply_markup=_navigation_keyboard(),
         )
         return
 
-    matches = _format_list(explanation["matches"], "✅")
-    warnings = _format_list(explanation["warnings"], "⚠️")
-
-    message = (
-        "ℹ️ ¿Por qué este resultado?\n\n"
-        f"Probabilidad estimada: {explanation['probability']}%\n\n"
-        "Este porcentaje no identifica a una persona o animal.\n"
-        "Solo indica que existen observaciones compatibles con la búsqueda realizada.\n\n"
-        "Coincidencias observadas:\n"
-        f"{matches}\n\n"
-        "Puntos que requieren verificación:\n"
-        f"{warnings}\n\n"
-        "La decisión final siempre debe ser verificada por una persona, familiar, "
-        "institución o validador humanitario."
+    probability = int(
+        explanation.get("probability", 0)
     )
 
-    keyboard = [
-        [
-            InlineKeyboardButton(
-                "🔍 Nueva búsqueda",
-                callback_data="search_menu",
-            )
-        ],
-        [
-            InlineKeyboardButton(
-                "⬅️ Volver al menú principal",
-                callback_data="back_to_start",
-            )
-        ],
-    ]
+    matches = explanation.get("matches", [])
+    warnings = explanation.get("warnings", [])
+    record = explanation.get("record", {})
+
+    matches_text = _format_items(matches, "✅")
+    warnings_text = _format_items(warnings, "⚠️")
+    interpretation = _probability_interpretation(probability)
+    record_summary = _format_record_summary(record)
+
+    message = (
+        "ℹ️ ¿Por qué aparece este resultado?\n\n"
+        f"Probabilidad estimada: {probability}%\n\n"
+        f"{interpretation}\n\n"
+        "Este porcentaje no confirma una identidad.\n"
+        "Representa únicamente el nivel de compatibilidad entre los datos "
+        "introducidos en la búsqueda y esta observación HCP.\n\n"
+        "✅ Coincidencias observadas\n\n"
+        f"{matches_text}\n\n"
+        "⚠️ Diferencias o datos que requieren verificación\n\n"
+        f"{warnings_text}\n\n"
+        "📄 Observación relacionada\n\n"
+        f"{record_summary}\n\n"
+        "La correlación es una ayuda para encontrar posibles casos relacionados. "
+        "La confirmación final debe realizarla una persona, familiar, institución "
+        "o validador humanitario."
+    )
 
     await query.edit_message_text(
         text=message,
-        reply_markup=InlineKeyboardMarkup(keyboard),
+        reply_markup=_navigation_keyboard(),
     )
