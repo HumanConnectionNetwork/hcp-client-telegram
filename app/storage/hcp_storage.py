@@ -10,9 +10,6 @@ RECORDS_FILE = DATA_DIR / "hcp_records.json"
 def ensure_storage_exists() -> None:
     """
     Ensure that the local storage directory and records file exist.
-
-    In production, the data directory can be mounted as a persistent
-    Docker volume.
     """
 
     DATA_DIR.mkdir(
@@ -30,9 +27,6 @@ def ensure_storage_exists() -> None:
 def load_records() -> list[dict[str, Any]]:
     """
     Load all locally stored HCP records.
-
-    Return an empty list when the file cannot be read, contains invalid
-    JSON, or does not contain a JSON array.
     """
 
     ensure_storage_exists()
@@ -61,7 +55,7 @@ def save_records(
     records: list[dict[str, Any]],
 ) -> None:
     """
-    Replace the local record collection with the supplied records.
+    Save all HCP records to local storage.
     """
 
     ensure_storage_exists()
@@ -80,7 +74,7 @@ def add_record(
     record: dict[str, Any],
 ) -> None:
     """
-    Append one canonical HCP record to local storage.
+    Add one canonical HCP record to local storage.
     """
 
     records = load_records()
@@ -92,10 +86,9 @@ def load_record_by_id(
     record_id: str,
 ) -> dict[str, Any] | None:
     """
-    Return one HCP record matching the supplied UUID.
+    Return the record matching the supplied UUID.
 
-    The comparison ignores surrounding whitespace and letter casing.
-    Return None when the record does not exist.
+    Returns None when no record exists.
     """
 
     normalized_id = str(record_id).strip().lower()
