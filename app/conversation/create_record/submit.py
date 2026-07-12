@@ -52,13 +52,16 @@ async def submit_record(
     text="✅ Reporte registrado correctamente."
 )
 
-await update.effective_chat.send_message(
-    text=(
-        "🆔 ID del reporte\n\n"
-        f"`{record['id']}`"
-    ),
-    parse_mode="Markdown"
-)
+language = context.user_data.get("language")
+
+context.user_data.clear()
+
+if language:
+    context.user_data["language"] = language
+
+context.user_data["last_record_id"] = record["id"]
+
+return await start_menu(update, context)
 
 await update.effective_chat.send_message(
     text=(
