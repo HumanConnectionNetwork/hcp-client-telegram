@@ -16,11 +16,16 @@ env/
 # Runtime data
 data/*
 !data/.gitkeep
+!data/example_records.json
 
 # Testing and coverage
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Logs
+*.log
+logs/
 
 # Editors
 .vscode/
